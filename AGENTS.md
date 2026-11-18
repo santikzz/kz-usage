@@ -4,7 +4,7 @@ Read this file before you work on this mod. Your global rules in `~/.claude/CLAU
 
 ## What this mod is
 
-kz-usage is a [Herdr](https://herdr.dev) mod that shows plan usage for Claude and Codex in the status bar, with a hover card for the reset times. The public repo is `github.com/santikzz/kz-usage` (MIT). The main test machine is Windows 10 with Herdr 0.1.16. Codex, macOS and Linux are not tested.
+kz-usage is a [Herdr](https://herdr.dev) mod that shows plan usage for Claude and Codex in the status bar, with a hover card for the reset times. The public repo is `github.com/santikzz/kz-usage` (MIT). The main test machine is Windows 10 with Herdr 0.1.16. Claude on macOS is also tested. Codex and Linux are not tested.
 
 Read these files first:
 

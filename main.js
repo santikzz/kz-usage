@@ -6,7 +6,7 @@
 // read the same answer, so the usage endpoints see one request a minute at most.
 import { View, div, image } from "gpui-kit";
 import { h_flex, v_flex, HoverCard } from "gpui-base";
-import { theme, props, home, readTextFile, checking, shared, setShared, layout, run } from "herdr";
+import { theme, props, home, readTextFile, checking, shared, setShared, layout, run, exec, window } from "herdr";
 import { PROVIDERS, load, resetText, clock } from "./providers.js";
 
 const TICK = 15_000;
@@ -46,7 +46,8 @@ export default class Usage extends View {
     setShared(this.key, { ...cache, pending: now });
 
     cx.spawn(async () => {
-      const options = (id) => ({ home: home(), dir: this.dirs[id], model: this.model, read: readTextFile });
+      const keychain = window()?.platform === "macos" ? readKeychain : null;
+      const options = (id) => ({ home: home(), dir: this.dirs[id], model: this.model, read: readTextFile, keychain });
       const results = await Promise.all(due.map((id) => load(id, options(id))));
       const data = { ...(shared(this.key)?.data ?? {}) };
       due.forEach((id, i) => { data[id] = merge(data[id], results[i], Date.now()); });
@@ -91,6 +92,11 @@ function merge(previous, result, now) {
   const kept = previous?.state === "ok" && (result.state === "limited" || result.state === "error");
   // keep the last numbers through a rate limit or a network error, and say so
   return kept ? { ...previous, failed: result.state, next } : { ...result, at: now, next };
+}
+
+async function readKeychain(service) {
+  const r = await exec("security", ["find-generic-password", "-s", service, "-w"]);
+  return r.code === 0 ? r.stdout.trim() : null;
 }
 
 function findBlock(node) {

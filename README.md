@@ -68,7 +68,7 @@ Put settings in `props` on the layout block. All of them are optional:
 
 | Provider | Login file | Usage endpoint |
 |---|---|---|
-| Claude | `~/.claude/.credentials.json` | `GET https://api.anthropic.com/api/oauth/usage` |
+| Claude | `~/.claude/.credentials.json`, on macOS the Keychain item `Claude Code-credentials` | `GET https://api.anthropic.com/api/oauth/usage` |
 | Codex | `~/.codex/auth.json` | `GET https://chatgpt.com/backend-api/wham/usage` |
 
 Grok and Gemini are not supported:
@@ -87,7 +87,7 @@ kz-usage reads your login files. It sends each token only to the API of its own 
 - The two usage endpoints are not documented. They can change without notice.
 - The Claude endpoint has a strict rate limit. Other tools that use the same login share it. If two tools check every minute, both get rate limits.
 - kz-usage does not refresh tokens. When you do not use Claude Code or Codex for some hours, the token expires and the bar shows `Expired`. Start the CLI to get a new token.
-- Tested on Windows 10 with Herdr 0.1.16 and a Claude Max plan. Codex, macOS and Linux are not tested.
+- Tested on Windows 10 with Herdr 0.1.16 and a Claude Max plan. Claude on macOS is also tested. Codex and Linux are not tested.
 
 ## Develop
 

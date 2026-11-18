@@ -7,6 +7,8 @@ export const PROVIDERS = {
     icon: "icons/claude.svg",
     dir: ".claude",
     file: ".credentials.json",
+    // macOS keeps the login here instead of the file
+    keychain: "Claude Code-credentials",
     login: "Run claude and log in",
     request(auth) {
       const token = auth?.claudeAiOauth?.accessToken;
@@ -37,9 +39,11 @@ export const PROVIDERS = {
 
 // state: "ok" | "login" (no credentials) | "expired" (401 or 403) | "limited" (429)
 // | "error" (network, server, bad answer). Plain data, so it can go into shared().
-export async function load(id, { home, dir, model, read }) {
+export async function load(id, { home, dir, model, read, keychain }) {
   const provider = PROVIDERS[id];
-  const auth = json(await read(`${dir || `${home}/${provider.dir}`}/${provider.file}`).catch(() => null));
+  let text = await read(`${dir || `${home}/${provider.dir}`}/${provider.file}`).catch(() => null);
+  if (text == null && !dir && provider.keychain && keychain) text = await keychain(provider.keychain).catch(() => null);
+  const auth = json(text);
   const request = provider.request(auth);
   if (!request) return { state: "login" };
 
